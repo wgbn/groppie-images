@@ -1,0 +1,7 @@
+{
+  "name": "crop-images",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
