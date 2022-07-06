@@ -14,6 +14,9 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "curly": "off",
+        "no-underscore-dangle": "off",
+        "@angular-eslint/no-output-on-prefix": "off",
         "@angular-eslint/component-class-suffix": [
           "error",
           {
@@ -21,7 +24,7 @@
           }
         ],
         "@angular-eslint/component-selector": [
-          "error",
+          "off",
           {
             "type": "element",
             "prefix": "app",

@@ -1,0 +1,11 @@
+{
+	"appId": "br.com.wgbn.cropimages",
+	"appName": "crop-images",
+	"webDir": "www",
+	"bundledWebRuntime": false,
+  "linuxAndroidStudioPath": "/snap/bin/android-studio",
+  "server": {
+    "url": "http://192.168.1.69:8100",
+    "cleartext": true
+  }
+}

@@ -1,6 +1,7 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "crop-images",
+	"appId": "br.com.wgbn.cropimages",
+	"appName": "Crippie",
 	"webDir": "www",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+  "linuxAndroidStudioPath": "/snap/android-studio/current/android-studio/bin/studio.sh"
 }

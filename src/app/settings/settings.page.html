@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configurações</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveSettings()">
+        <ion-icon icon="save"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item-divider color="secondary">
+      <ion-label>Pastas</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>Origem:</ion-label>
+      <ion-input [(ngModel)]="setting.source"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Destino:</ion-label>
+      <ion-input [(ngModel)]="setting.destination"></ion-input>
+    </ion-item>
+
+    <ion-item-divider color="secondary">
+      <ion-label>Tags de fotos</ion-label>
+    </ion-item-divider>
+
+    <ion-item-divider color="light">
+      <ion-label>Criar nova tag</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>Nome:</ion-label>
+      <ion-input [(ngModel)]="newTag.tag"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Emoji:</ion-label>
+      <ion-input [(ngModel)]="newTag.emoji"></ion-input>
+      <ion-button size="small" slot="end" (click)="addTag()">
+        <ion-icon icon="add"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item-divider color="light">
+      <ion-label>Tags</ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let t of setting.tags; let idx = index">
+      <strong slot="start">{{t.emoji}}</strong>
+      <ion-label>{{t.tag}}</ion-label>
+      <ion-button slot="end" color="danger" (click)="removeTag(idx)">
+        <ion-icon icon="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>

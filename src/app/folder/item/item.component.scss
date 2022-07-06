@@ -1,0 +1,50 @@
+.item {
+  position: relative;
+
+  .checks {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .5rem;
+    z-index: 50000;
+  }
+
+  .checks2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .65);
+    z-index: 50000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ion-icon, strong {
+      font-size: 2rem;
+      color: #fff;
+    }
+  }
+
+  .labels {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    padding: .2rem;
+    text-align: center;
+    font-size: .6rem;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    padding-bottom: .5rem;
+    //background-color: rgba(0, 0, 0, .3);
+  }
+
+  img {
+    background-color: #e0e0e0;
+    width: 100%; // calc(calc(100vw / 2) - .5rem);
+    height: 100%; // calc(calc(100vw / 2) - .5rem);
+    object-fit: contain;
+  }
+}

@@ -1,21 +1,98 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+    <ion-buttons slot="start" *ngIf="folder">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ folder }}</ion-title>
+
+    <ion-title>{{ folder || 'Imagens' }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/settings" title="Configurações">
+        <ion-icon name="settings"></ion-icon>
+      </ion-button>
+      <div class="separator"></div>
+      <ion-button (click)="readFolder()" title="Recarregar">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+      <ion-button (click)="showName = !showName" title="Exibir nomes">
+        <ion-icon name="{{showName ? 'document-text' : 'document-text-outline'}}"></ion-icon>
+      </ion-button>
+      <ion-button (click)="setSelect()" title="Ativar seleção">
+        <ion-icon name="{{select ? 'checkmark-done-circle' : 'checkmark-done-circle-outline'}}"></ion-icon>
+      </ion-button>
+      <ion-button (click)="setTags($event)" *ngIf="selectTotal" title="Taggear fotos">
+        <ion-icon name="folder-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="saveFolder()" title="Gravar fotos">
+        <ion-icon name="save-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ folder }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-popover #popover [isOpen]="isPopoverOpen" mode="ios"  (didDismiss)="isPopoverOpen = false">
+    <ng-template>
+      <ion-list>
+        <ion-item button *ngFor="let t of files.tags" (click)="setTag(t)">
+          {{t.emoji}} {{t.tag}}
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </ion-popover>
 
-  <div id="container">
-    <strong class="capitalize">{{ folder }}</strong>
-    <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div class="items">
+    <one-item *ngFor="let item of folderContents; let idx = index" [folder]="folder" [item]="item" [showName]="showName" class="item"
+      [select]="select" (onChecked)="onCheck($event, item)" (onSelected)="onClick($event, idx)"></one-item>
   </div>
 </ion-content>
+
+<div class="full-pic" *ngIf="selectedPic && selectedPic.uri">
+  <div class="pic-bar">
+    <ng-container *ngIf="!edit">
+      <ion-button [fill]="false" [size]="'small'" (click)="deleteFile()">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+
+      <ion-button [fill]="false" [size]="'small'" (click)="edit = !edit">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
+
+      <ion-button [fill]="false" [size]="'small'" (click)="selectedPic = null; showBar = false; edit = false">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ng-container>
+    <ng-container *ngIf="edit">
+      <ion-button [fill]="false" [size]="'small'" (click)="saveFile()">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+
+      <ion-button [fill]="false" [size]="'small'" (click)="free = !free">
+        <ion-icon name="{{!free ? 'resize' : 'expand'}}"></ion-icon>
+      </ion-button>
+
+      <ion-button [fill]="false" [size]="'small'" (click)="rotate()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+      <!--&nbsp;-->
+      <ion-button [fill]="false" [size]="'small'" (click)="selectedPic = null; showBar = false; edit = false">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ng-container>
+  </div>
+  <div class="pic-over" *ngIf="!edit">
+    <div class="left" (click)="prev()"></div>
+    <div class="center" (click)="showBar = !showBar"></div>
+    <div class="right" (click)="next()"></div>
+  </div>
+  <img [src]="selectedPic.uri" *ngIf="!edit">
+  <image-cropper *ngIf="edit"
+    [imageURL]="selectedPic.uri"
+    [aspectRatio]="9 / 16"
+    [imageQuality]="100"
+    [maintainAspectRatio]="!free"
+    [canvasRotation]="canvasRotation"
+    format="jpeg"
+    backgroundColor="#000"
+    (imageCropped)="imageCropped($event)"></image-cropper>
+</div>

@@ -1,0 +1,10 @@
+<div class="item" #oneItem (click)="onClick()">
+  <div class="checks2" *ngIf="item.checked && !item.tag" [style.height.px]="oneItem.offsetWidth">
+    <ion-icon icon="checkmark"></ion-icon>
+  </div>
+  <div class="checks2" *ngIf="item.tag" [style.height.px]="oneItem.offsetWidth">
+    <strong>{{item.tag.emoji}}</strong>
+  </div>
+  <span class="labels" *ngIf="showName">{{item.name}}</span>
+  <img [style.height.px]="oneItem.offsetWidth" [src]="item.uri" [style.opacity]="item.tag ? .3 : 1">
+</div>
