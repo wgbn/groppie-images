@@ -57,13 +57,16 @@ export class FilesService {
 
   async saveFolder(folderName: string, files: any[]) {
     if (files.filter(f => f.tag).length) {
-      // const folderName = prompt('Nome:');
       if (folderName) {
         const newFolder = `${this.destination}/${folderName}`;
-        const photos = files.filter(f => f.tag && f.tag.tag === 'pic');
-        const bikini = files.filter(f => f.tag && f.tag.tag === 'bikini');
-        const videos = files.filter(f => f.tag && f.tag.tag === 'videos');
-        const closeup = files.filter(f => f.tag && f.tag.tag === 'closeup');
+        const folders: any = {};
+
+        for (const f of files) {
+          if (f.tag && f.tag.tag) {
+            folders[f.tag.tag] = folders[f.tag.tag] || [];
+            folders[f.tag.tag].push(f);
+          }
+        }
 
         try {
           await Filesystem.mkdir({ path: newFolder, directory: Directory.ExternalStorage });
@@ -71,11 +74,11 @@ export class FilesService {
           if (e.message.toLowerCase().indexOf('exists') === -1) return;
         }
 
-        await this.copyFiles(newFolder, '', photos);
+        if (folders.pic && folders.pic.length) await this.copyFiles(newFolder, '', folders.pic);
 
-        if (bikini.length) await this.copyFiles(newFolder, 'bikini', bikini);
-        if (videos.length) await this.copyFiles(newFolder, 'videos', videos);
-        if (closeup.length) await this.copyFiles(newFolder, 'closeup', closeup);
+        for (const folder in folders) {
+          if (folder !== 'pic') await this.copyFiles(newFolder, folder, folders[folder]);
+        }
 
         await this.deleteFiles(files.filter(f => f.tag));
       }
