@@ -32,7 +32,17 @@ export class FilesService {
   }
 
   async readFolder(path) {
-    const contents = await Filesystem.readdir({ path, directory: Directory.ExternalStorage });
+    // console.log('## PATH ' + path);
+    let contents: any = { files: [] };
+    const options: any = { path };
+    if (!path.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+
+    try {
+      // contents = await Filesystem.readdir({ path, directory: Directory.ExternalStorage });
+      contents = await Filesystem.readdir(options);
+    } catch (e) {
+      console.log('## ERR ' + e.message);
+    }
 
     const folderContents: any[] = contents.files.filter(f => allowedExt(f) || !f.includes('.')).sort().map((file, i) => {
       if (allowedExt(file)) {
@@ -52,10 +62,12 @@ export class FilesService {
       };
     });
 
+    // console.log('## =>' + folderContents.filter(f => !f.isFile).map(f => f.name).join(','));
     return folderContents;
   }
 
   async saveFolder(folderName: string, files: any[]) {
+    // console.log('## saveIn ' + folderName);
     if (files.filter(f => f.tag).length) {
       if (folderName) {
         const newFolder = `${this.destination}/${folderName}`;
@@ -68,8 +80,13 @@ export class FilesService {
           }
         }
 
+        const options: any = {
+          path: newFolder
+        };
+        if (!newFolder.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+
         try {
-          await Filesystem.mkdir({ path: newFolder, directory: Directory.ExternalStorage });
+          await Filesystem.mkdir(options);
         } catch (e) {
           if (e.message.toLowerCase().indexOf('exists') === -1) return;
         }
@@ -86,37 +103,52 @@ export class FilesService {
   }
 
   async deleteFile(file) {
-    await Filesystem.deleteFile({
-      path: file.path.replace('file:///storage/emulated/0/', ''),
-      directory: Directory.ExternalStorage
-    });
+    const options: any = {
+      path: file.path,
+    };
+    if (!options.path.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+    await Filesystem.deleteFile(options);
   }
 
   async saveFile(file, base64) {
-    await Filesystem.writeFile({
-      path: file.path.replace('file:///storage/emulated/0/', ''),
-      directory: Directory.ExternalStorage,
+    const options: any = {
+      path: file.path,
       data: base64,
-    });
+    };
+    if (!options.path.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+    await Filesystem.writeFile(options).then(ok => console.log('# OK')).catch(e => console.log('# ERROR' + e.message));
   }
 
   private async copyFiles(path, subPath, files) {
     const newFolder = `${path}/${subPath}`;
 
+    const options: any = {
+      path: newFolder
+    };
+    if (!newFolder.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+
     try {
-      if (subPath) await Filesystem.mkdir({ path: newFolder, directory: Directory.ExternalStorage });
+      if (subPath) await Filesystem.mkdir(options);
     } catch (e) {
       if (e.message.toLowerCase().indexOf('exists') === -1) return;
     }
     const promises = [];
 
     for (const file of files) {
-      promises.push(Filesystem.copy({
-        from: file.path.replace('file:///storage/emulated/0/', ''),
+      console.log('## ' + file.path);
+      console.log('## ' + file.path.replace('file:///storage/emulated/0/', ''));
+      console.log('## ' + newFolder + '/' + file.name);
+    }
+
+    for (const file of files) {
+      const opts: any = {
+        from: file.path, // .replace('file:///storage/emulated/0/', ''),
         to: `${newFolder}/${file.name}`,
-        directory: Directory.ExternalStorage,
-        toDirectory: Directory.ExternalStorage
-      }));
+      };
+      if (!opts.from.startsWith('file:///')) opts.directory = Directory.ExternalStorage;
+      if (!opts.to.startsWith('file:///')) opts.toDirectory = Directory.ExternalStorage;
+
+      promises.push(Filesystem.copy(opts));
     }
 
     await Promise.all(promises);
@@ -126,10 +158,11 @@ export class FilesService {
     if (files.length) {
       const promises = [];
       for (const file of files) {
-        promises.push(Filesystem.deleteFile({
-          path: file.path.replace('file:///storage/emulated/0/', ''),
-          directory: Directory.ExternalStorage
-        }));
+        const options: any = {
+          path: file.path
+        };
+        if (!options.path.startsWith('file:///')) options.directory = Directory.ExternalStorage;
+        promises.push(Filesystem.deleteFile(options));
       }
 
       await Promise.all(promises);

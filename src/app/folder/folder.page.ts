@@ -106,12 +106,14 @@ export class FolderPage implements OnInit {
 
   async saveFolder() {
     const name = await this.openSelectFolderModal();
-    const loading = await this.loadingCtrl.create({ message: 'A gravar...' });
-    loading.present();
-    await this.files.saveFolder(name, this.folderContents).then(() => {
-      this.readFolder();
-    });
-    loading.dismiss();
+    if (name) {
+      const loading = await this.loadingCtrl.create({ message: 'A gravar...' });
+      loading.present();
+      await this.files.saveFolder(name, this.folderContents).then(() => {
+        this.readFolder();
+      });
+      loading.dismiss();
+    }
   }
 
   back() {

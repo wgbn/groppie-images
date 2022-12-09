@@ -4,6 +4,7 @@
       <ion-label>Nome:</ion-label>
       <ion-input [(ngModel)]="name" (keyup)="filterNames($event)"></ion-input>
       <ion-button slot="end" (click)="setName()">Criar</ion-button>
+      <ion-button slot="start" color="dark" (click)="close()">X</ion-button>
     </ion-item>
     <ion-item *ngFor="let folder of folders" button (click)="setName(folder.name)">
       <ion-label>{{folder.name}}</ion-label>

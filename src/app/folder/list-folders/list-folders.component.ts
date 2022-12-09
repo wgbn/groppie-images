@@ -30,6 +30,10 @@ export class ListFoldersComponent implements OnInit {
     if (name || this.name) this.modal.dismiss(name || this.name);
   }
 
+  close() {
+    this.modal.dismiss(null);
+  }
+
   filterNames(evt) {
     this.folders = this.rawNames.filter(r => r.name.toLowerCase().indexOf(this.name.toLowerCase()) > -1);
     if (!this.name) this.folders = [...this.rawNames];

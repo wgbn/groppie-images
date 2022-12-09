@@ -104,14 +104,14 @@ ion-menu-button {
     width: 100%;
     z-index: 99999;
     padding: .5rem;
-    max-height: 51px;
+    //max-height: 51px;
     text-align: center;
     background: rgba(0, 0, 0, .5);
     display: flex;
     justify-content: space-between;
     ion-icon {
       color: #fff;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
   }
 
